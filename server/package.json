@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "build": "tsc",
-    "start": "node dist/server.js",
+    "start": "node dist/server.js || node server.js",
     "watch": "nodemon dist/server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -18,7 +18,11 @@
     "brcypt": "^1.0.1",
     "express": "^4.19.2",
     "jsonwebtoken": "^8.5.1",
-    "mongoose": "^8.0.0"
+    "mongoose": "^8.0.0",
+    "@apollo/server": "^4.10.2",
+    "cors": "^2.8.5",
+    "body-parser": "^1.20.2",
+    "graphql": "^16.8.1"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",
