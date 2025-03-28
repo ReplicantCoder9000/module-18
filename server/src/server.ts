@@ -1,15 +1,15 @@
-import express from 'express';
-import path from 'path';
-import { ApolloServer } from '@apollo/server';
-import { expressMiddleware } from '@apollo/server/express4';
-import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
-import * as http from 'http';
-import * as cors from 'cors';
-import * as bodyParser from 'body-parser';
+const express = require('express');
+const path = require('path');
+const { ApolloServer } = require('@apollo/server');
+const { expressMiddleware } = require('@apollo/server/express4');
+const { ApolloServerPluginDrainHttpServer } = require('@apollo/server/plugin/drainHttpServer');
+const http = require('http');
+const cors = require('cors');
+const { json } = require('body-parser');
 
-import db from './config/connection.js';
-import { typeDefs, resolvers } from './schemas/index.js';
-import { authMiddleware } from './utils/auth.js';
+const db = require('./config/connection');
+const { typeDefs, resolvers } = require('./schemas/index');
+const { authMiddleware } = require('./utils/auth');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -25,35 +25,40 @@ const server = new ApolloServer({
 });
 
 // Start Apollo Server
-(async () => {
+const startApolloServer = async () => {
   await server.start();
 
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
+  app.use(express.urlencoded({ extended: true }));
+  app.use(express.json());
 
-// if we're in production, serve client/build as static assets
-if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, '../../client/dist')));
-}
+  // if we're in production, serve client/build as static assets
+  if (process.env.NODE_ENV === 'production') {
+    app.use(express.static(path.join(__dirname, '../../client/dist')));
+  }
 
-// Apply Apollo middleware and set up context
-app.use(
-  '/graphql',
-  cors(),
-  bodyParser.json(),
-  expressMiddleware(server, {
-    context: authMiddleware,
-  })
-);
+  // Apply Apollo middleware and set up context
+  app.use(
+    '/graphql',
+    cors(),
+    json(),
+    expressMiddleware(server, {
+      context: authMiddleware,
+    })
+  );
 
-// Serve the React frontend for any other request
-app.get('*', (_, res) => {
-  res.sendFile(path.join(__dirname, '../../client/dist/index.html'));
-});
+  // Serve the React frontend for any other request
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../../client/dist/index.html'));
+  });
 
-// Start the server
-db.once('open', async () => {
-  await new Promise<void>((resolve) => httpServer.listen({ port: PORT }, resolve));
-  console.log(`🚀 Server ready at http://localhost:${PORT}/graphql`);
-});
-})();
+  // Start the server
+  db.once('open', async () => {
+    await new Promise((resolve) => httpServer.listen({ port: PORT }, resolve));
+    console.log(`🚀 Server ready at http://localhost:${PORT}/graphql`);
+  });
+};
+
+// Call the async function to start the server
+startApolloServer();
+
+module.exports = { app, startApolloServer };

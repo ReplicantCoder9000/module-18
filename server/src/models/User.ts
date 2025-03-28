@@ -1,21 +1,10 @@
-import { Schema, model, type Document } from 'mongoose';
-import bcrypt from 'bcrypt';
+const mongoose = require('mongoose');
+const bcrypt = require('bcrypt');
+const bookSchema = require('./Book');
 
-// import schema from Book.js
-import bookSchema from './Book.js';
-import type { BookDocument } from './Book.js';
+const { Schema } = mongoose;
 
-export interface UserDocument extends Document {
-  id: string;
-  username: string;
-  email: string;
-  password: string;
-  savedBooks: BookDocument[];
-  isCorrectPassword(password: string): Promise<boolean>;
-  bookCount: number;
-}
-
-const userSchema = new Schema<UserDocument>(
+const userSchema = new Schema(
   {
     username: {
       type: String,
@@ -54,7 +43,7 @@ userSchema.pre('save', async function (next) {
 });
 
 // custom method to compare and validate password for logging in
-userSchema.methods.isCorrectPassword = async function (password: string) {
+userSchema.methods.isCorrectPassword = async function (password) {
   return await bcrypt.compare(password, this.password);
 };
 
@@ -63,6 +52,6 @@ userSchema.virtual('bookCount').get(function () {
   return this.savedBooks.length;
 });
 
-const User = model<UserDocument>('User', userSchema);
+const User = mongoose.model('User', userSchema);
 
-export default User;
+module.exports = User;

@@ -1,4 +1,4 @@
-import { gql } from 'graphql';
+const { gql } = require('graphql-tag');
 
 const typeDefs = gql`
   # Define which fields are accessible from the Book model
@@ -50,4 +50,4 @@ const typeDefs = gql`
   }
 `;
 
-export default typeDefs;
+module.exports = typeDefs;

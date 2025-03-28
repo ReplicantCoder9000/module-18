@@ -1,6 +1,6 @@
-import { GraphQLError } from 'graphql';
-import User from '../models/User.js';
-import { signToken } from '../services/auth.js';
+const { GraphQLError } = require('graphql');
+const User = require('../models/User');
+const { signToken } = require('../utils/auth');
 
 const resolvers = {
   Query: {
@@ -67,4 +67,4 @@ const resolvers = {
   },
 };
 
-export default resolvers;
+module.exports = resolvers;
