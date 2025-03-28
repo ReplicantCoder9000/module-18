@@ -1,11 +1,11 @@
 import express from 'express';
-import path from 'node:path';
+import path from 'path';
 import { ApolloServer } from '@apollo/server';
 import { expressMiddleware } from '@apollo/server/express4';
 import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
-import http from 'http';
-import cors from 'cors';
-import { json } from 'body-parser';
+import * as http from 'http';
+import * as cors from 'cors';
+import * as bodyParser from 'body-parser';
 
 import db from './config/connection.js';
 import { typeDefs, resolvers } from './schemas/index.js';
@@ -25,7 +25,8 @@ const server = new ApolloServer({
 });
 
 // Start Apollo Server
-await server.start();
+(async () => {
+  await server.start();
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -39,7 +40,7 @@ if (process.env.NODE_ENV === 'production') {
 app.use(
   '/graphql',
   cors(),
-  json(),
+  bodyParser.json(),
   expressMiddleware(server, {
     context: authMiddleware,
   })
@@ -55,3 +56,4 @@ db.once('open', async () => {
   await new Promise<void>((resolve) => httpServer.listen({ port: PORT }, resolve));
   console.log(`🚀 Server ready at http://localhost:${PORT}/graphql`);
 });
+})();

@@ -1,5 +1,5 @@
-import jwt from 'jsonwebtoken';
-import dotenv from 'dotenv';
+import * as jwt from 'jsonwebtoken';
+import * as dotenv from 'dotenv';
 
 dotenv.config();
 
@@ -13,12 +13,19 @@ interface JwtPayload {
 const secret = process.env.JWT_SECRET_KEY || 'mysecretsshhhhh';
 const expiration = '2h';
 
-export const authMiddleware = ({ req }) => {
+interface Request {
+  body: any;
+  query: any;
+  headers: any;
+  user?: any;
+}
+
+export const authMiddleware = ({ req }: { req: Request }) => {
   // Allows token to be sent via req.body, req.query, or headers
-  let token = req.body.token || req.query.token || req.headers.authorization;
+  let token = req.body?.token || req.query?.token || req.headers?.authorization;
 
   // ["Bearer", "<tokenvalue>"]
-  if (req.headers.authorization) {
+  if (req.headers?.authorization) {
     token = token.split(' ').pop().trim();
   }
 
@@ -38,7 +45,7 @@ export const authMiddleware = ({ req }) => {
   return req;
 };
 
-export const signToken = ({ username, email, _id }: JwtPayload) => {
+export const signToken = (username: string, email: string, _id: unknown) => {
   const payload = { username, email, _id };
   return jwt.sign({ data: payload }, secret, { expiresIn: expiration });
 };

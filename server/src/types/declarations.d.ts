@@ -1,0 +1,12 @@
+declare module 'graphql-tag';
+declare module '@apollo/server';
+declare module '@apollo/server/express4';
+declare module '@apollo/server/plugin/drainHttpServer';
+declare module 'cors';
+declare module 'body-parser';
+declare module 'express';
+declare module 'http';
+declare module 'path';
+declare module 'jsonwebtoken';
+declare module 'dotenv';
+declare module 'graphql';

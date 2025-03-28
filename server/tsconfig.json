@@ -10,7 +10,12 @@
     "allowJs": true,
     "noEmitOnError": false,
     "strict": false,
-    "noImplicitAny": false
+    "noImplicitAny": false,
+    "strictNullChecks": false,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true
   },
   "include": ["src"],
   "typeRoots": ["./node_modules/@types", "./src/types"]

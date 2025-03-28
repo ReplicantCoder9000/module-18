@@ -5,6 +5,7 @@ import { removeBookId } from '../utils/localStorage';
 import { useQuery, useMutation } from '@apollo/client';
 import { GET_ME } from '../utils/queries';
 import { REMOVE_BOOK } from '../utils/mutations';
+import type { Book } from '../models/Book';
 
 const SavedBooks = () => {
   // Use the useQuery hook to execute the GET_ME query on load
@@ -22,7 +23,7 @@ const SavedBooks = () => {
   });
   
   // Get the user data from the query result
-  const userData = data?.me || {};
+  const userData = data?.me || { savedBooks: [] };
 
   // create function that accepts the book's mongo _id value as param and deletes the book from the database
   const handleDeleteBook = async (bookId: string) => {
@@ -66,7 +67,7 @@ const SavedBooks = () => {
             : 'You have no saved books!'}
         </h2>
         <Row>
-          {userData.savedBooks.map((book) => {
+          {userData.savedBooks.map((book: Book) => {
             return (
               <Col md='4' key={book.bookId}>
                 <Card border='dark'>

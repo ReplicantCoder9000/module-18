@@ -1,4 +1,4 @@
-import { gql } from '@apollo/server';
+import { gql } from 'graphql';
 
 const typeDefs = gql`
   # Define which fields are accessible from the Book model

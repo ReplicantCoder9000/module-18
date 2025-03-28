@@ -1,4 +1,4 @@
-import { AuthenticationError } from '@apollo/server';
+import { GraphQLError } from 'graphql';
 import User from '../models/User.js';
 import { signToken } from '../services/auth.js';
 
@@ -9,7 +9,7 @@ const resolvers = {
       if (context.user) {
         return User.findOne({ _id: context.user._id });
       }
-      throw new AuthenticationError('You need to be logged in!');
+      throw new GraphQLError('You need to be logged in!', { extensions: { code: 'UNAUTHENTICATED' } });
     },
   },
 
@@ -26,13 +26,13 @@ const resolvers = {
       const user = await User.findOne({ email });
 
       if (!user) {
-        throw new AuthenticationError('No user found with this email address');
+        throw new GraphQLError('No user found with this email address', { extensions: { code: 'UNAUTHENTICATED' } });
       }
 
       const correctPw = await user.isCorrectPassword(password);
 
       if (!correctPw) {
-        throw new AuthenticationError('Incorrect credentials');
+        throw new GraphQLError('Incorrect credentials', { extensions: { code: 'UNAUTHENTICATED' } });
       }
 
       const token = signToken(user.username, user.email, user._id);
@@ -49,7 +49,7 @@ const resolvers = {
         );
         return updatedUser;
       }
-      throw new AuthenticationError('You need to be logged in!');
+      throw new GraphQLError('You need to be logged in!', { extensions: { code: 'UNAUTHENTICATED' } });
     },
 
     // Remove a book from `savedBooks`
@@ -62,7 +62,7 @@ const resolvers = {
         );
         return updatedUser;
       }
-      throw new AuthenticationError('You need to be logged in!');
+      throw new GraphQLError('You need to be logged in!', { extensions: { code: 'UNAUTHENTICATED' } });
     },
   },
 };
