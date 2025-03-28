@@ -1,15 +1,15 @@
-import express from 'express';
+const express = require('express');
 const router = express.Router();
-import {
+const {
   createUser,
   getSingleUser,
   saveBook,
   deleteBook,
   login,
-} from '../../controllers/user-controller.js';
+} = require('../../controllers/user-controller');
 
 // import middleware
-import { authenticateToken } from '../../services/auth.js';
+const { authenticateToken } = require('../../services/auth');
 
 // put authMiddleware anywhere we need to send a token for verification of user
 router.route('/').post(createUser).put(authenticateToken, saveBook);
@@ -20,4 +20,4 @@ router.route('/me').get(authenticateToken, getSingleUser);
 
 router.route('/books/:bookId').delete(authenticateToken, deleteBook);
 
-export default router;
+module.exports = router;
